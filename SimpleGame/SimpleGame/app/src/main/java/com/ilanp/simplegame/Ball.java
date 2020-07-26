@@ -1,30 +1,26 @@
-package com.yaelne_rivkano.ex2;
+package com.ilanp.simplegame;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 public class Ball
 {
-    private float cx, cy;    // ball location (center point)
+    private float cx,cy;    // ball location (center point)
     private float radius;
     private int color;
     private Paint paint;
     private boolean isVisble;
     private float dx,dy; // for animation move
 
-    public Ball()
+    public Ball(float cx, float cy, float radius, int color)
     {
-        this.cx = 0;
-        this.cy = 0;
-        this.dx = 3;
-        this.dy = 3;
-        this.radius = 0;
-        this.color = Color.BLACK;
+        this.cx = cx;
+        this.cy = cy;
+        this.radius = radius;
+        this.color = color;
         isVisble = true;
         paint = new Paint();
         paint.setColor(color);
-        paint.setStyle(Paint.Style.FILL);
     }
 
     public boolean isVisble() {
@@ -103,7 +99,7 @@ public class Ball
     public void draw(Canvas canvas)
     {
         if(isVisble)
-            canvas.drawCircle(cx, cy, radius, paint);
+            canvas.drawCircle(cx,cy,radius,paint);
     }
 
     public boolean isPointInside(float tx, float ty)

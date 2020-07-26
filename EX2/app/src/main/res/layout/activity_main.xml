@@ -5,17 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="40dp"-->
+    <!--        android:layout_marginLeft="20dp"-->
+    <!--        android:text="Score:0"-->
+    <!--        tools:ignore="MissingConstraints"-->
+    <!--        android:layout_marginStart="20dp" />-->
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_alignParentRight="true"-->
+    <!--        android:layout_marginTop="40dp"-->
+    <!--        android:layout_marginRight="20dp"-->
+    <!--        android:text="Lives:3"-->
+    <!--        tools:ignore="MissingConstraints"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_marginEnd="20dp" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
-      <com.yaelne_rivkano.ex2.GameView
-          android:id = "@+id/drawViewID"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent">
-      </com.yaelne_rivkano.ex2.GameView>
-  </LinearLayout>
-
-
-
+        <com.yaelne_rivkano.ex2.GameView
+            android:id = "@+id/drawViewID"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.yaelne_rivkano.ex2.GameView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
