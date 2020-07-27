@@ -72,10 +72,11 @@ public class Brick {
     public boolean isCollide(Ball ball)
     {
         // distance
-        double distX = ball.getCx() + ball.getRadius();
-        double distY = ball.getCy() + ball.getRadius();
-        if((this.leftX <= distX && this.rightX >= distX)
-                && (this.topY <= distY && this.bottomY >= distY))
+        // direction of ball is right
+        double distX = ball.getCx() - ball.getRadius();
+        double distY = ball.getCy() - ball.getRadius();
+        if((leftX - ball.getRadius() <= ball.getCx() && rightX + ball.getRadius() >= ball.getCx())
+                && (topY - ball.getRadius() <= ball.getCy() && bottomY + ball.getRadius() >= ball.getCy()))
                 return true;
         return false;
 

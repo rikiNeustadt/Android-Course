@@ -69,17 +69,6 @@ public class Paddle {
             canvas.drawRect(leftX, topY, rightX, bottomY, paint);
     }
 
-    public boolean isCollide(Ball other)
-    {
-        // distance
-//        double dist = Math.sqrt((cx-other.cx)*(cx-other.cx) + (cy-other.cy)*(cy-other.cy));
-//
-//        if(dist <= radius + other.radius)
-//            return true;
-
-        return false;
-    }
-
     public void move(float canvasWidth, Boolean moveRight)
     {
         if(moveRight){
@@ -94,6 +83,10 @@ public class Paddle {
             leftX -= 10;
             rightX -= 10;
         }
+    }
+    public boolean isCollide(Ball ball)
+    {
+        return leftX <= ball.getCx() && rightX >= ball.getCx();
     }
 
 }

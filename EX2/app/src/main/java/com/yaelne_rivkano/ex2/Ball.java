@@ -3,6 +3,14 @@ package com.yaelne_rivkano.ex2;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+
 
 public class Ball
 {
@@ -12,13 +20,16 @@ public class Ball
     private Paint paint;
     private boolean isVisble;
     private float dx,dy; // for animation move
+    private int speed;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Ball()
     {
+        speed = ThreadLocalRandom.current().nextInt(2, 6);
         this.cx = 0;
         this.cy = 0;
-        this.dx = 3;
-        this.dy = 3;
+        this.dx = speed;
+        this.dy = speed;
         this.radius = 0;
         this.color = Color.BLACK;
         isVisble = true;
@@ -85,8 +96,8 @@ public class Ball
 
     public void move(float canvasWidth, float canvasHeight)
     {
-        cx = cx + dx;  // move right 1 pixel
-        cy = cy + dy;    // move down
+        cx += dx;  // move right 3 pixel
+        cy += dy;    // move down
 
         // check if in canvas border
 
@@ -124,6 +135,22 @@ public class Ball
             return true;
 
         return false;
+    }
+
+    public boolean validLocation(Paddle paddle)
+    {
+        if(cy - radius <= paddle.getTopY())
+            return paddle.getLeftX() <= cx && paddle.getRightX() >= cx;
+        return true;
+    }
+
+    public void changeDirection(){
+        Log.d("debug", "in change direction, dx is: "+dx);
+        Log.d("debug", "in change direction, dy is: "+dy);
+        //dx = -dx;
+        dy = -dy;
+        Log.d("debug", "in change direction after reverse, dx is: "+dx);
+        Log.d("debug", "in change direction after reverse, dy is: "+dy);
     }
 
     public void stop()
