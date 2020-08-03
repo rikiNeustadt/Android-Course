@@ -1,0 +1,64 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:saveEnabled="false"
+    tools:context=".LoginActivity">
+
+
+    <EditText
+        android:id="@+id/edtUserNamedId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:focusable="true"
+        android:hint="User Name"
+        android:textColorHint="#F44336" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="1dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/login" />
+
+    <EditText
+        android:id="@+id/edtPassowrdId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtUserNamedId"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColorHint="#F44336" />
+
+    <Button
+        android:id="@+id/btnLoginId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="50dp"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="login" />
+
+</RelativeLayout>
