@@ -1,16 +1,14 @@
 package com.yaelne_rivkano.ex2;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.Log;
-
 import androidx.annotation.RequiresApi;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
-
+import static android.graphics.Color.rgb;
 
 public class Ball
 {
@@ -18,32 +16,27 @@ public class Ball
     private float radius;
     private int color;
     private Paint paint;
-    private boolean isVisble;
-    private float dx,dy; // for animation move
-    private int speed;
+    private float dx, dy; // for animation move
+    private static int[] availableSpeed = {-2, -3, -4, -5, 2, 3, 4, 5};
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public Ball()
     {
-        speed = ThreadLocalRandom.current().nextInt(2, 6);
         this.cx = 0;
         this.cy = 0;
-        this.dx = speed;
-        this.dy = speed;
+        setSpeed();
         this.radius = 0;
-        this.color = Color.BLACK;
-        isVisble = true;
+        this.color = rgb(26, 0, 13);
         paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
     }
 
-    public boolean isVisble() {
-        return isVisble;
-    }
-
-    public void setVisble(boolean visble) {
-        isVisble = visble;
+    public void setSpeed(){
+        int rnd = new Random().nextInt(availableSpeed.length);
+        int speed = availableSpeed[rnd];
+        this.dx = speed;
+        this.dy = speed;
     }
 
     public float getCx() {
@@ -70,28 +63,12 @@ public class Ball
         this.radius = radius;
     }
 
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public float getDx() {
         return dx;
     }
 
-    public void setDx(float dx) {
-        this.dx = dx;
-    }
-
     public float getDy() {
         return dy;
-    }
-
-    public void setDy(float dy) {
-        this.dy = dy;
     }
 
     public void move(float canvasWidth, float canvasHeight)
@@ -105,7 +82,6 @@ public class Ball
         if( (cx-radius <= 0) || (cx+radius >= canvasWidth))
             dx = -dx;  // reverse direction
 
-
         // Up or Down check
         if( (cy-radius <= 0) || (cy+radius >= canvasHeight))
             dy = -dy;  // reverse direction
@@ -113,49 +89,10 @@ public class Ball
 
     public void draw(Canvas canvas)
     {
-        if(isVisble)
-            canvas.drawCircle(cx, cy, radius, paint);
-    }
-
-    public boolean isPointInside(float tx, float ty)
-    {
-        double dist = Math.sqrt((cx-tx)*(cx-tx) + (cy-ty)*(cy-ty));
-
-        if(dist <= radius)
-            return true;
-        return false;
-    }
-
-    public boolean isCollide(Ball other)
-    {
-        // distance
-        double dist = Math.sqrt((cx-other.cx)*(cx-other.cx) + (cy-other.cy)*(cy-other.cy));
-
-        if(dist <= radius + other.radius)
-            return true;
-
-        return false;
-    }
-
-    public boolean validLocation(Paddle paddle)
-    {
-        if(cy - radius <= paddle.getTopY())
-            return paddle.getLeftX() <= cx && paddle.getRightX() >= cx;
-        return true;
+        canvas.drawCircle(cx, cy, radius, paint);
     }
 
     public void changeDirection(){
-        Log.d("debug", "in change direction, dx is: "+dx);
-        Log.d("debug", "in change direction, dy is: "+dy);
-        //dx = -dx;
         dy = -dy;
-        Log.d("debug", "in change direction after reverse, dx is: "+dx);
-        Log.d("debug", "in change direction after reverse, dy is: "+dy);
-    }
-
-    public void stop()
-    {
-        dx = 0;
-        dy = 0;
     }
 }

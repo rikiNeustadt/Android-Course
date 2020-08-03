@@ -1,31 +1,24 @@
 package com.yaelne_rivkano.ex2;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
 import androidx.annotation.RequiresApi;
-
+import static android.graphics.Color.rgb;
 
 public class GameView extends View {
     private int screenHeight;
     private int screenWidth;
-
     private final int ROWS = 5;
     private final int COLS = 7;
-    private final int SPACEBRICK = 5;
     private int score;
     private int lives;
     private float brickWidth;
-    private float brickHeigt;
     private Ball ball;
     private Brick [][] bricks;
     private Paddle paddle;
@@ -39,10 +32,9 @@ public class GameView extends View {
     private final MediaPlayer mpCollide;
 
 
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public GameView(Context context, AttributeSet atr){
         super( context, atr);
-        float screenWidth = getWidth();
         mpVictory = MediaPlayer.create(context, R.raw.win);
         mpVictory.setVolume(50, 50);
         mpLoss = MediaPlayer.create(context, R.raw.loss);
@@ -52,6 +44,7 @@ public class GameView extends View {
         newGame();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void newGame(){
         ball = new Ball();
         bricks = new Brick [ROWS][COLS];
@@ -68,15 +61,13 @@ public class GameView extends View {
         numberOfBricks = COLS*ROWS;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onTouchEvent(MotionEvent event){
         float touchX = event.getX();
 
         // if touch in right side of the screen - move paddle right
-        if(touchX > this.screenWidth/2)
-            moveRight = true;
-        else
-            moveRight = false;
+        moveRight = touchX > this.screenWidth / 2;
         if(playState)
             switch (event.getAction()){
                 case MotionEvent.ACTION_DOWN:
@@ -87,10 +78,12 @@ public class GameView extends View {
                     break;
             }
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (lives == 0)
+            if(lives == 0 || numberOfBricks == 0)
                 newGame();
-            else
+            else if(!playState) {
                 playState = true;
+                ball.setSpeed();
+            }
             invalidate();
         }
         return true;
@@ -100,20 +93,21 @@ public class GameView extends View {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDraw(Canvas canvas){
-
         this.screenHeight = getHeight();
         this.screenWidth = getWidth();
+        int SPACEBRICK = 5;
         brickWidth = (screenWidth - (COLS + 1)*(SPACEBRICK))/COLS;
-        brickHeigt = screenHeight/20;
+        float brickHeigt = screenHeight / 20;
 
         float leftPosition = SPACEBRICK;
-        // ToDo: replace the following line with the value 250
-        float topPosition = 50;
+        float topPosition = 170;
         float rightPosition = SPACEBRICK + brickWidth;
         float bottomPosition = topPosition + brickHeigt;
-        float radius = brickHeigt/2;
+        float radius = brickHeigt /2;
+        boolean oneBrickFlag = true;
         Paint paint = new Paint();
 
+        canvas.drawARGB(100,225,179,214);
 
         for(int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
@@ -121,20 +115,20 @@ public class GameView extends View {
                 bricks[i][j].setRightX(rightPosition);
                 bricks[i][j].setTopY(topPosition);
                 bricks[i][j].setBottomY(bottomPosition);
-                if( bricks[i][j].isVisble() && bricks[i][j].isCollide(ball)) {
-                    bricks[i][j].setVisble(false);
+                if (bricks[i][j].isVisible() && bricks[i][j].isCollide(ball) && oneBrickFlag) {
+                    bricks[i][j].setVisible(false);
                     mpCollide.start();
-                    score += lives*5;
+                    score += lives * 5;
                     numberOfBricks--;
-                    if(numberOfBricks == 0){
-                        paint.setColor(Color.GREEN);
+                    if (numberOfBricks == 0) {
+                        paint.setColor(rgb(255, 51, 153));
                         paint.setTextSize(60);
-                        canvas.drawText("Game Over - You Win!", 250, screenHeight/2, paint);
+                        canvas.drawText("Game Over - You Win!", (float) (brickWidth * 2.3), screenHeight / 2 + 100, paint);
                         mpVictory.start();
                         playState = false;
-                        return;
                     }
                     ball.changeDirection();
+                    oneBrickFlag = false;
                 }
                 bricks[i][j].draw(canvas);
                 leftPosition = leftPosition + SPACEBRICK + brickWidth;
@@ -154,31 +148,31 @@ public class GameView extends View {
             bottomPosition = paddle.getBottomY();
 
             // ball is on the bottom screen
-            if(ball.getCy() + ball.getRadius() >= paddle.getTopY()){
+            if(ball.getCy() + ball.getRadius() > paddle.getTopY()){
                 if(paddle.isCollide(ball))
                     ball.changeDirection();
                 else {
                     lives--;
-                    //paddle.setLeftX();
                     if(lives == 0) {
                         // Game Over
-                        paint.setColor(Color.GREEN);
-                        paint.setTextSize(60);
-                        canvas.drawText("Game Over - You Loss!", 250, screenHeight/2, paint);
+                        paint.setColor(rgb(255, 51, 153));
+                        paint.setTextSize(70);
+                        canvas.drawText("Game Over - You Loss!", (float) (brickWidth*2.3), screenHeight/2, paint);
                         mpLoss.start();
+                        ball.setCx(ball.getCx() + ball.getDx() * 10);
+                        ball.setCy(ball.getCy() + ball.getDy() * 10);
                     }
+                    else
+                        firstTime = true;
                     playState = false;
-                    Log.d("debug", "set flag in ball");
-                    firstTime = true;
                 }
             }
         }
         if(firstTime){
             leftPosition = screenWidth/2 - brickWidth/2;
-            topPosition = screenHeight -150 - brickHeigt/2;
+            topPosition = screenHeight -150 - brickHeigt /2;
             rightPosition = screenWidth/2 + brickWidth/2;
             bottomPosition = screenHeight - 150;
-            Log.d("debug", "in first time, left pos is: "+leftPosition);
         }
         paddle.setLeftX(leftPosition);
         paddle.setTopY(topPosition);
@@ -189,7 +183,6 @@ public class GameView extends View {
         if(firstTime) {
             leftPosition = screenWidth / 2;
             topPosition = screenHeight - 150 - brickHeigt / 2 - radius;
-            Log.d("debug", "ball, first time");
         }
         else {
             ball.move(screenWidth, screenHeight);
@@ -202,29 +195,25 @@ public class GameView extends View {
         ball.draw(canvas);
 
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(30);
-        canvas.drawText("Score: " + score, 10, 25, paint);
-        canvas.drawText("Lives: " + lives, screenWidth - 200, 25, paint);
-
+        paint.setColor(rgb(102, 0, 51));
+        paint.setTextSize(50);
+        paint.setFakeBoldText(true);
+        canvas.drawText("Score: " + score, 100, 100, paint);
+        canvas.drawText("Lives: " + lives, screenWidth - 275, 100, paint);
         if(firstTime) {
-            paint.setColor(Color.YELLOW);
+            paint.setColor(rgb(255, 51, 153));
             paint.setTextSize(60);
-            Log.d("debug", "Lives: " + lives);
-            Log.d("debug", "playState: "+ playState);
-            if(lives > 0){
-                canvas.drawText("Click to PLAY!", 250, screenHeight/2, paint);
-                //firstTime = false;
-            }
+            if(lives > 0)
+                canvas.drawText("Click to PLAY!", (float) (brickWidth*2.8), screenHeight/2 + 100, paint);
+        }
+        if((!playState) && lives == 3 && numberOfBricks == COLS*ROWS){
+            canvas.drawText("Click to PLAY!", (float) (brickWidth*2.8), screenHeight/2 + 100, paint);
         }
         firstTime = false;
+
         if(!playState)
             return;
         else
             invalidate();
     }
-
-
-
-
 }

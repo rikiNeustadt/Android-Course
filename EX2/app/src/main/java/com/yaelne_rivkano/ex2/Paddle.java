@@ -1,14 +1,15 @@
 package com.yaelne_rivkano.ex2;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
+
+import static android.graphics.Color.rgb;
 
 public class Paddle {
     private float leftX, topY, rightX, bottomY;    // Paddle coordinates
     private int color;
     private Paint paint;
-    private boolean isVisble;
 
     public Paddle()
     {
@@ -16,19 +17,10 @@ public class Paddle {
         this.topY = 0;
         this.bottomY = 0;
         this.rightX = 0;
-        this.color = Color.BLUE;
-        isVisble = true;
+        this.color = rgb(128, 0, 64);
         paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
-    }
-
-    public boolean isVisble() {
-        return isVisble;
-    }
-
-    public void setVisble(boolean visble) {
-        isVisble = visble;
     }
 
     public float getLeftX() {
@@ -65,7 +57,6 @@ public class Paddle {
 
     public void draw(Canvas canvas)
     {
-        if(isVisble)
             canvas.drawRect(leftX, topY, rightX, bottomY, paint);
     }
 
@@ -86,8 +77,6 @@ public class Paddle {
     }
     public boolean isCollide(Ball ball)
     {
-        return leftX <= ball.getCx() && rightX >= ball.getCx();
+        return leftX - ball.getRadius() <= ball.getCx()  && rightX + ball.getRadius() >= ball.getCx();
     }
-
 }
-
