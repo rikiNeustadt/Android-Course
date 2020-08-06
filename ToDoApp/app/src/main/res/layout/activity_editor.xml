@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditorActivity">
+
+    <RelativeLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+        <TextView
+            android:id="@+id/txvAddId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add New ToDo"
+            android:textSize="25dp"
+            android:textAppearance="bold"/>
+        <LinearLayout
+            android:id="@+id/firstId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txvAddId">
+            <TextView
+                android:id="@+id/txvTitleId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Title:" />
+
+            <EditText
+                android:id="@+id/edtTitleId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/secondId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/firstId">
+            <TextView
+                android:id="@+id/txvDescriptionId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Description:" />
+            <EditText
+                android:id="@+id/edtDescriptionId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/thirdId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/secondId">
+            <TextView
+                android:id="@+id/txvDateId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Date:" />
+            <EditText
+                android:id="@+id/edtDateId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="" />
+            <Button
+                android:id="@+id/btnDatePickerId"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:onClick="showDatePicker"
+                android:text="PICKER" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/fourthId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/thirdId">
+            <TextView
+                android:id="@+id/txvTimeId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Time:" />
+            <EditText
+                android:id="@+id/edtTimeId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="" />
+            <Button
+                android:id="@+id/btnTimePickerId"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:onClick="showTimePicker"
+                android:text="PICKER" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/btnSaveId"
+            android:gravity=""
+            android:layout_below="@+id/fourthId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addToDo"
+            android:text="Save" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
