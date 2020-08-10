@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 AlertDialog.Builder myDialog = new AlertDialog.Builder(LoginActivity.this);
-                myDialog.setTitle("\uD834\uDD1D\u200F\n Exit Puzzle 15");
+                myDialog.setTitle("Exit ToDo App");
                 myDialog.setMessage("Do you really want to exit the app?");
                 myDialog.setCancelable(false);
                 myDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -90,6 +91,8 @@ public class LoginActivity extends AppCompatActivity{
                     SharedPreferences setting = getApplicationContext().getSharedPreferences("settings", 0);
                     SharedPreferences.Editor editor = setting.edit();
                     editor.putString("currentUser", userName);
+                    editor.apply();
+                    Log.d("debug","userName "+userName );
                     // move to next activity
                     Intent in = new Intent(LoginActivity.this, ToDoListActivity.class);
                     startActivity(in);

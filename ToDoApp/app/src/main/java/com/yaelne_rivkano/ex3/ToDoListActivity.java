@@ -2,16 +2,24 @@ package com.yaelne_rivkano.ex3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
+
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,6 +32,8 @@ public class ToDoListActivity extends AppCompatActivity {
     private ListView listViewToDos;
     private String currentUserName;
     private DBManager todoDB;
+    private AlarmManager alarmManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +41,11 @@ public class ToDoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todolist);
         todoDB = new DBManager(ToDoListActivity.this);
         // set title with current user name
-        SharedPreferences setting = getApplicationContext().getSharedPreferences("settings", 0);
-        currentUserName = setting.getString("currentUser", "");
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
+        currentUserName = settings.getString("currentUser", "");
+        Log.d("debug","userName "+currentUserName );
+        // get the System Alarm Manager
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         setTitle("ToDo List (" +currentUserName + ")");
 
         // listener for flouting button
@@ -40,17 +53,19 @@ public class ToDoListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent in = new Intent(ToDoListActivity.this, EditorActivity.class);
-            startActivity(in);
+                // mark current todo as -1 in order to indicate to create new todo, neither load existing todo
+                SharedPreferences setting = getApplicationContext().getSharedPreferences("settings", 0);
+                SharedPreferences.Editor editor = setting.edit();
+                editor.putInt("currentToDo", -1);
+                editor.apply();
+                Intent in = new Intent(ToDoListActivity.this, EditorActivity.class);
+                startActivity(in);
             }
         });
         // connect todos array list to list view
         toDosList = new ArrayList<>();
-        toDoAdapter = new ToDoAdapter(this, toDosList);
-        listViewToDos = findViewById(R.id.listViewToDoId);
-        listViewToDos.setAdapter(toDoAdapter);
         // display all toDos for current user
-        toDosList = todoDB.searchText("", currentUserName);
+        updateList("");
 
 
         SearchView simpleSearchView = findViewById(R.id.searchViewId);
@@ -59,17 +74,64 @@ public class ToDoListActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // when text in search field changed, display found items
-                toDosList = todoDB.searchText(query, currentUserName);
+                updateList(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
                 // when text in search field changed, display found items
-                toDosList = todoDB.searchText(query, currentUserName);
+                updateList(query);
                 return true;
             }
         });
+
+        listViewToDos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("debug", "position " +position + "id " + id);
+                int idToDo = toDosList.get(position).getId();
+                SharedPreferences setting = getApplicationContext().getSharedPreferences("settings", 0);
+                SharedPreferences.Editor editor = setting.edit();
+                editor.putInt("currentToDo", idToDo);
+                editor.apply();
+                Intent in = new Intent(ToDoListActivity.this, EditorActivity.class);
+                startActivity(in);
+            }
+        });
+
+        listViewToDos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int position, long id) {
+                AlertDialog.Builder myDialog = new AlertDialog.Builder(ToDoListActivity.this);
+                myDialog.setTitle("Delet ToDo");
+                myDialog.setMessage("Are you sure you want to delete this toDo?");
+                myDialog.setCancelable(false);
+                myDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int idToDo = toDosList.get(position).getId();
+                        Intent intent = new Intent(ToDoListActivity.this, AlarmReceiver.class);
+                        PendingIntent sender = PendingIntent.getBroadcast(ToDoListActivity.this, idToDo, intent, 0);
+                        alarmManager.cancel(sender);
+                        todoDB.delToDo(idToDo);
+                    }
+                });
+                myDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                myDialog.show();
+                return true;
+            }
+        });
+    }
+
+    public void updateList(String query){
+        toDosList = todoDB.searchText(query, currentUserName);
+        toDoAdapter = new ToDoAdapter(ToDoListActivity.this, toDosList);
+        listViewToDos = findViewById(R.id.listViewToDoId);
+        listViewToDos.setAdapter(toDoAdapter);
     }
 
     @Override

@@ -24,15 +24,15 @@ public class ToDoAdapter extends ArrayAdapter<ToDoItem> {
 
         ToDoItem todoItem = getItem(position);
 
-        // set todo title
+        // set todos title
         TextView txvTitle = convertView.findViewById(R.id.txvTitleId);
         txvTitle.setText(todoItem.getTitle());
 
-        // set todo description
+        // set todos description
         TextView txvdescription = convertView.findViewById(R.id.txvDescriptionId);
         txvdescription.setText(todoItem.getDescription());
 
-        // set todo time
+        // set todos time
         TextView txvTime = convertView.findViewById(R.id.txvTimeId);
         TextView txvDate = convertView.findViewById(R.id.txvDateId);
         Calendar calendar = Calendar.getInstance();
